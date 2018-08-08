@@ -65,7 +65,7 @@ class DatePicker extends React.Component {
 
   getListingBookedDatesByMonth() {
     let [year, month] = utils.getYearMonth(this.state.dateInView);
-    let url = `/api/dates/${this.props.listingId}?month=${year}-${month+1}`;
+    let url = `/listings/${this.props.listingId}/dates?month=${year}-${month+1}`;
 
     fetch(url)
     .then(res => res.json())
@@ -78,7 +78,7 @@ class DatePicker extends React.Component {
     let context = this;
 
     let [year, month, date] = utils.getYearMonthDate(this.props.checkInDate);
-    let url = `/api/dates/${this.props.listingId}?targetDate=${year}-${month+1}-${date}`;
+    let url = `/listings/${this.props.listingId}/dates?targetDate=${year}-${month+1}-${date}`;
     fetch(url)
       .then(res => res.json())
       .then((res) => {

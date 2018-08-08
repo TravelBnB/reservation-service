@@ -1,10 +1,10 @@
 const mysql = require('mysql');
 
 const db = mysql.createConnection({
-  host: process.env.RDS_HOSTNAME || 'localhost',
-  user: process.env.RDS_USERNAME || 'root',
-  password: process.env.RDS_PASSWORD || '',
-  port: process.env.RDS_PORT|| 3306,
+  // host: process.env.RDS_HOSTNAME || 'localhost',
+  user: 'root',
+  // password: process.env.RDS_PASSWORD || '',
+  // port: process.env.RDS_PORT|| 3306,
   database: 'reservation'
 });
 

@@ -17,7 +17,7 @@ class ReservationBox extends React.Component {
   }
 
   getListingInfo() {
-    let url = `/api/listings/${this.props.listingId}`;
+    let url = `/listings/${this.props.listingId}`;
     fetch(url)
     .then(res => res.json())
     .then((res) => this.setListingDetails(res))
