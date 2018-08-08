@@ -7,8 +7,9 @@
     "test": "jest",
     "lint": "eslint **/*.js **/*.jsx",
     "delint": "eslint --fix **/*.js **/**/*.jsx",
-    "start": "node server/server.js",
-    "build": "webpack -d --watch"
+    "start": "nodemon server/server.js",
+    "build": "webpack -d --watch",
+    "database": "mysql -u root < ./db/schema.sql"
   },
   "repository": {
     "type": "git",

@@ -15,7 +15,7 @@ class ReservationDetails extends React.Component {
   }
 
   postNewReservation () {
-    let url ='/api/reservations/new' + this.props.listingId;
+    let url ='/dates/' + this.props.listingId;
     let options = {
       listingId: this.props.listing.id,
       checkIn: this.state.checkIn,
@@ -26,7 +26,7 @@ class ReservationDetails extends React.Component {
 
     }
 
-    fetch('http://localhost:3003/api/reservations/new', options)
+    fetch('http://localhost:3003/listings/dates/', options)
     .then(this.resetReservationDetails.bind(this));
   }
 

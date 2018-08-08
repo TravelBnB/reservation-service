@@ -13,7 +13,7 @@ app.use(express.json());
 app.listen(PORT, () => console.log('Listening at port: ' + PORT));
 
 
-app.get('/api/listings/:listingId', (req, res) => {
+app.get('/listings/:listingId', (req, res) => {
 
   db.getListingById(req.params, (err, result) => {
     if (err) {
@@ -34,7 +34,7 @@ app.get('/api/listings/:listingId', (req, res) => {
 
 });
 
-app.get('/api/dates/:listingId', (req, res) => {
+app.get('/listings/:listingId/dates', (req, res) => {
   // TODO: refactor using router
   let method = db.getBookedDatesByListingId;
   let data = null; 
@@ -58,9 +58,7 @@ app.get('/api/dates/:listingId', (req, res) => {
 
 });
 
-
-
-app.post('/api/reservations/new', (req, res) => {
+app.post('/listings/:listingId/dates', (req, res) => {
   // TODO: find more elegant implementation that ensures atomicity
   const data = utils.parseBookedDates(req.body);
   db.postNewBookedDates(data, (err, result) => {
