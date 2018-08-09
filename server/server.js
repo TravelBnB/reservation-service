@@ -34,10 +34,10 @@ app.get('/listings/:listingId', (req, res) => {
 
 });
 
-app.get('/listings/:listingId/dates', (req, res) => {
+app.get('/listings/:listingId/reservations', (req, res) => {
   // TODO: refactor using router
   let method = db.getBookedDatesByListingId;
-  let data = null; 
+  let data = null;
 
   if (req.query.targetDate) {
     method = db.getFirstBookedDateAfterTarget;
@@ -55,10 +55,9 @@ app.get('/listings/:listingId/dates', (req, res) => {
       res.status(500).send({ err: `Server oopsie ${err}` });
     } else res.send(result);
   });
-
 });
 
-app.post('/listings/:listingId/dates', (req, res) => {
+app.post('/listings/:listingId/reservations', (req, res) => {
   // TODO: find more elegant implementation that ensures atomicity
   const data = utils.parseBookedDates(req.body);
   db.postNewBookedDates(data, (err, result) => {
@@ -75,5 +74,8 @@ app.post('/listings/:listingId/dates', (req, res) => {
       });
     }
   });
+});
+
+app.delete('/listings/:listingId/reservations', (req, res) => {
 
 });

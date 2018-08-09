@@ -9,43 +9,14 @@
   - https://github.com/fullstakreaktor/about-service
   - https://github.com/fullstakreaktor/kony-proxy
 
-## Table of Contents
+#CRUD API Endpoints
 
-1. [Usage](#Usage)
-1. [Requirements](#requirements)
-1. [Development](#development)
+- GET /listings/:listingId/
 
-## Usage
+- GET /listings/:listingId/reservations 
 
-> Some usage instructions
+- POST /listings/:listingId/reservations {user_id: INT NOT NULL, content: text}
 
-## Requirements
+- UPDATE /listings/:listingId/reservations {user_id: INT NOT NULL, content: text}
 
-- Node 6.13.0
-- Mysql 5.7.22 
-
-## Development
-
-### Setting Up 
-
-To create database of mock data
-From within root directory:
-
-```sh
-mysql -h localhost -u root 
-source db/schema.sql
-use reservation
-source mock-data/mock_data.sql
-```
-
-
-To install dependencies
-From within the root directory:
-
-```sh
-npm install -g webpack
-npm install
-npm run build
-npm start
-```
-
+- DELETE /listings/:listingId/reservations {user_id: INT NOT NULL, content: text}
