@@ -37,7 +37,7 @@ app.get('/listings/:listingId', (req, res) => {
 app.get('/listings/:listingId/dates', (req, res) => {
   // TODO: refactor using router
   let method = db.getBookedDatesByListingId;
-  let data = null; 
+  let data = null;
 
   if (req.query.targetDate) {
     method = db.getFirstBookedDateAfterTarget;
@@ -55,7 +55,6 @@ app.get('/listings/:listingId/dates', (req, res) => {
       res.status(500).send({ err: `Server oopsie ${err}` });
     } else res.send(result);
   });
-
 });
 
 app.post('/listings/:listingId/dates', (req, res) => {
@@ -75,5 +74,22 @@ app.post('/listings/:listingId/dates', (req, res) => {
       });
     }
   });
+});
 
+app.delete('/listings/:listingId/dates', (req, res) => {
+  const data = utils.parseBookedDates(req.body);
+  db.deleteNewBookedDates(data, (err, result) => {
+    if (err) {
+      res.status(500).send({ err: 'Failed to post dates' });
+    } else {
+      data.bookedDatesId = result.insertId;
+      db.deleteReservationDatesById(result.insertId, (err, result) => {
+        if (err) {
+          res.status(500).send({ err: 'Failed to delete reservation' });
+        } else {
+          res.status(201).send(reservation);
+        }
+      });
+    }
+  });
 });
