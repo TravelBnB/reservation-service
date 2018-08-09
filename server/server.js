@@ -77,19 +77,5 @@ app.post('/listings/:listingId/dates', (req, res) => {
 });
 
 app.delete('/listings/:listingId/dates', (req, res) => {
-  const data = utils.parseBookedDates(req.body);
-  db.deleteNewBookedDates(data, (err, result) => {
-    if (err) {
-      res.status(500).send({ err: 'Failed to post dates' });
-    } else {
-      data.bookedDatesId = result.insertId;
-      db.deleteReservationDatesById(result.insertId, (err, result) => {
-        if (err) {
-          res.status(500).send({ err: 'Failed to delete reservation' });
-        } else {
-          res.status(201).send(reservation);
-        }
-      });
-    }
-  });
+  
 });
