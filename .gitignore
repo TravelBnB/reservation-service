@@ -11,3 +11,5 @@ spec
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+newrelic_agent.log

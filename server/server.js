@@ -1,6 +1,7 @@
+const newRelic = require('newrelic');
 const express = require('express');
 const path = require('path');
-const db = require('../db/db.js');
+const db = require('../postgresdb/db.js');
 const utils = require('./utils.js');
 const PORT = process.env.PORT || 3003;
 
@@ -19,43 +20,39 @@ app.get('/listings/:listingId', (req, res) => {
     if (err) {
       res.status(500).send({ err: `Server oopsie ${err}` });
     } else if (result.length === 0) {
-      res.status(404).send('No such listing')
+      res.status(404).send('No such listing');
     } else {
-      db.getReviewsByListingId(result[0].review_id, (err, reviews) => {
-        if (err) {
-          res.status(500).send({err: `Server oopsie ${err}`})
-        } else {
-          result[0].reviews = reviews[0];
-          res.send(result[0]);
-        }
-      })
+      const { total_reviews, avg_rating } = result.rows[0];
+      result.rows[0].reviews = { total_reviews, avg_rating };
+      res.send(result.rows[0]);
     }
   });
-
 });
 
 app.get('/listings/:listingId/reservations', (req, res) => {
   // TODO: refactor using router
-  let method = db.getBookedDatesByListingId;
-  let data = null;
-
-  if (req.query.targetDate) {
-    method = db.getFirstBookedDateAfterTarget;
-    let target = req.query.targetDate.split('-');
-    data = [req.params.listingId, ...target];
-  }
-
-  if (req.query.month) {
-    let month = req.query.month.split('-');
-    data = [req.params.listingId, ...month];
-  }
-
-  method(data, (err, result) => {
+  const data = req.params.listingId;
+  db.getBookedDatesByListingId(data, (err, result) => {
     if (err) {
       res.status(500).send({ err: `Server oopsie ${err}` });
-    } else res.send(result);
+    } else {
+      res.send(result.rows);
+    }
   });
 });
+
+app.get('/guests/:guestId/reservations', (req, res) => {
+  // TODO: refactor using router
+  const data = req.params.guestId;
+  db.getBookedDatesByGuestId(data, (err, result) => {
+    if (err) {
+      res.status(500).send({ err: `Server oopsie ${err}` });
+    } else {
+      res.send(result.rows);
+    }
+  });
+});
+
 
 app.post('/listings/:listingId/reservations', (req, res) => {
   // TODO: find more elegant implementation that ensures atomicity
