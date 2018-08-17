@@ -2,26 +2,33 @@ config:
   target: 'http://localhost:3003'
   phases:
     # - duration: 60
-    #   arrivalRate: 30
-    - duration: 60
-      arrivalRate: 30
+    #   arrivalRate: 80
+    - duration: 30
+      arrivalRate: 5
+  payload:
+    path: "./test.csv"
+    fields:
+      - "listingid"
+      - "guestid"
+    order: "sequence"
+    
   variables:
-    listingid:
+    listings:
       - [9999955, 9999981, 9999920, 9999725, 9999719, 9999889, 9999894]
-    guestid:
-      - [1, 2, 3, 4, 5]
+  #   guestid:
+  #     - [1, 2, 3, 4, 5]
 scenarios:
   - flow:
       # - loop:
       #     - get:
       #         url: "/listings/{{ $loopElement }}/reservations"
-      #   over: listingid
+      #   over: listings
       - loop:
-          - loop: 
-              - get:
-                  url: "/listings/{{ $loopElement }}/guests/{{ $loopElement }}/reservations"
-            over: guestid
-        over: listingid  
+          - get: 
+              url: "/listings/{{ listingid }}/guests/{{ guestid }}/reservations"
+        count: 200
+      # - get:
+      #     url: "/listings/{{ listingid }}/guests/{{ guestid }}/reservations"
       # - get:
       #     url: "/listings/4020/reservations"
     # - loop:
