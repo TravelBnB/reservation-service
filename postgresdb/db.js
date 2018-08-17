@@ -1,6 +1,6 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
-const client = new Client({
+const client = new Pool({
   user: 'postgres',
   // host: 'database.server.com',
   database: 'reservations',
@@ -11,7 +11,7 @@ const client = new Client({
 client.connect();
 
 const getListingById = ({listingId}, callback) => {
-  const queryStr = `SELECT * from listings WHERE id = $1 `;
+  const queryStr = `SELECT * from listings WHERE id = $1 ;`;
   client.query(queryStr, [listingId], callback);
 };
 
@@ -30,8 +30,17 @@ const getBookedDatesByGuestId = (guestId, callback) => {
   client.query(queryStr, [guestId], callback);
 };
 
+const getBookedDatesByListingGuestId = (listingId, guestId, callback) => {
+  // let startDate = [year, month, 1].join('-');
+  // let endDate = month === 12? [Number(year)+1, 1, 1].join('-'): [year, Number(month)+1, 1].join('-');
+  const queryStr = `SELECT check_in, check_out FROM reservations WHERE listing_id = $1 AND guest_id = $2 ;`;
+  // console.log(listingId, startDate, endDate);
+  client.query(queryStr, [listingId, guestId], callback);
+};
+
 module.exports = {
   getListingById,
   getBookedDatesByListingId,
   getBookedDatesByGuestId,
+  getBookedDatesByListingGuestId,
 };

@@ -1,8 +1,13 @@
 const newRelic = require('newrelic');
+const compression = require('compression');
 const express = require('express');
 const path = require('path');
 const db = require('../postgresdb/db.js');
 const utils = require('./utils.js');
+// var http = require('http');
+
+// http.globalAgent.maxSockets = 25;
+
 const PORT = process.env.PORT || 3003;
 
 const app = express();
@@ -45,6 +50,18 @@ app.get('/guests/:guestId/reservations', (req, res) => {
   // TODO: refactor using router
   const data = req.params.guestId;
   db.getBookedDatesByGuestId(data, (err, result) => {
+    if (err) {
+      res.status(500).send({ err: `Server oopsie ${err}` });
+    } else {
+      res.send(result.rows);
+    }
+  });
+});
+
+app.get('/listings/:listingId/guests/:guestId/reservations', (req, res) => {
+  // TODO: refactor using router
+  const { listingId, guestId } = req.params;
+  db.getBookedDatesByListingGuestId(listingId, guestId, (err, result) => {
     if (err) {
       res.status(500).send({ err: `Server oopsie ${err}` });
     } else {
