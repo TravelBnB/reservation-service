@@ -71,21 +71,14 @@ app.get('/listings/:listingId/guests/:guestId/reservations', (req, res) => {
 });
 
 
-app.post('/listings/:listingId/reservations', (req, res) => {
+app.post('/reservations', (req, res) => {
   // TODO: find more elegant implementation that ensures atomicity
-  const data = utils.parseBookedDates(req.body);
-  db.postNewBookedDates(data, (err, result) => {
+  db.postNewBookedDates(req.body, (err, result) => {
     if (err) {
       res.status(500).send({ err: 'Failed to post dates' });
+      console.log(err);
     } else {
-      data.bookedDatesId = result.insertId;
-      db.postNewReservation(data, (error, reservation) => {
-        if (err) {
-          db.deleteBookedDatesById(result.insertId, () => {
-            res.status(500).send({ err: 'Failed to post reservation' });
-          });
-        } else res.status(201).send(reservation);
-      });
+      res.status(201).send(result);
     }
   });
 });

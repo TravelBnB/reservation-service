@@ -1,17 +1,25 @@
 config:
   target: 'http://localhost:3003'
   phases:
-    # - duration: 60
-    #   arrivalRate: 80
-    - duration: 30
-      arrivalRate: 5
+    - duration: 60
+      arrivalRate: 10
   payload:
-    path: "./test.csv"
-    fields:
-      - "listingid"
-      - "guestid"
-    order: "sequence"
-    
+    - path: "./test.csv"
+      fields:
+        - "listingid"
+        - "guestid"
+      order: "sequence"
+    - path: "./post.csv"
+      fields:
+        - "postlistingid"
+        - "postguestid"
+        - "postcheckin"
+        - "postcheckout"
+        - "postcharge"
+        - "postdog"
+        - "postadult"
+        - "postcreateat"
+      order: "sequence"
   variables:
     listings:
       - [9999955, 9999981, 9999920, 9999725, 9999719, 9999889, 9999894]
@@ -26,7 +34,20 @@ scenarios:
       - loop:
           - get: 
               url: "/listings/{{ listingid }}/guests/{{ guestid }}/reservations"
-        count: 200
+        count: 100
+      - loop:
+          - post:
+              url: "/reservations"
+              json:
+                listing_id: "{{ postlistingid }}"
+                guest_id: "{{ postguestid }}"
+                check_in: "{{ postcheckin }}"
+                check_out: "{{ postcheckout }}"
+                total_charge: "{{ postcharge }}"
+                total_pup: "{{ postdog }}"
+                total_adult: "{{ postadult }}"
+                create_at: "{{ postcreateat }}"
+        count: 1
       # - get:
       #     url: "/listings/{{ listingid }}/guests/{{ guestid }}/reservations"
       # - get:

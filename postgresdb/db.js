@@ -38,9 +38,27 @@ const getBookedDatesByListingGuestId = (listingId, guestId, callback) => {
   client.query(queryStr, [listingId, guestId], callback);
 };
 
+const postNewBookedDates = (data, callback) => {
+  const {
+    listing_id,
+    guest_id,
+    check_in,
+    check_out,
+    total_charge,
+    total_pup,
+    total_adult,
+    create_at
+  } = data;
+  const queryStr = `INSERT INTO reservations (listing_id,guest_id,check_in,check_out,total_charge,total_pups,total_adults,created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`;
+  // console.log(listingId, startDate, endDate);
+  client.query(queryStr, [ listing_id, guest_id, check_in, check_out, 
+    total_charge, total_pup, total_adult, create_at ], callback);
+};
+
 module.exports = {
   getListingById,
   getBookedDatesByListingId,
   getBookedDatesByGuestId,
   getBookedDatesByListingGuestId,
+  postNewBookedDates,
 };
