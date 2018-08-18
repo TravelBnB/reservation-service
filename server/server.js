@@ -1,12 +1,21 @@
 const newRelic = require('newrelic');
 const compression = require('compression');
 const express = require('express');
+const redis = require('redis');
 const path = require('path');
 const db = require('../postgresdb/db.js');
 const utils = require('./utils.js');
-// var http = require('http');
+const axios = require('axios');
 
+const API_URL = 'http://api.fixer.io';
+
+// change Num sockets
+// var http = require('http');
 // http.globalAgent.maxSockets = 25;
+
+// Redis
+const REDIS_URL = process.env.REDIS_URL;
+const client = redis.createClient(REDIS_URL);
 
 const PORT = process.env.PORT || 3003;
 
@@ -20,18 +29,50 @@ app.listen(PORT, () => console.log('Listening at port: ' + PORT));
 
 
 app.get('/listings/:listingId', (req, res) => {
+  const listingId = req.params.listingId;
+  const countKey = `${listingId}:count`;
+  const ratesKey = `${listingId}:rates`;
+  const url = `${API_URL}/${listingId}`;
 
-  db.getListingById(req.params, (err, result) => {
-    if (err) {
-      res.status(500).send({ err: `Server oopsie ${err}` });
-    } else if (result.length === 0) {
-      res.status(404).send('No such listing');
-    } else {
-      const { total_reviews, avg_rating } = result.rows[0];
-      result.rows[0].reviews = { total_reviews, avg_rating };
-      res.send(result.rows[0]);
-    }
+  client.incr(countKey, (err, count) => {
+    client.hgetall(ratesKey, (err, rates) => {
+      if (rates) {
+        return res.send(rates);
+      }
+      db.getListingById(req.params, (err, result) => {
+        if (err) {
+          res.status(500).send({ err: `Server oopsie ${err}` });
+        } else if (result.length === 0) {
+          res.status(404).send('No such listing');
+        } else {
+          const { total_reviews, avg_rating } = result.rows[0];
+          result.rows[0].reviews = { total_reviews, avg_rating };
+          client.hmset(
+            ratesKey, result.rows[0], (err, result) => {
+              if (err) console.log(err);
+            },
+          );
+          return res.send({ 
+            count,
+            rates: result.rows[0],
+          });
+        }
+      });
+    });
   });
+  // db.getListingById(req.params, (err, result) => {
+  //   if (err) {
+  //     res.status(500).send({ err: `Server oopsie ${err}` });
+  //   } else if (result.length === 0) {
+  //     res.status(404).send('No such listing');
+  //   } else {
+  //     const { total_reviews, avg_rating } = result.rows[0];
+  //     result.rows[0].reviews = { total_reviews, avg_rating };
+  //     // res.json({ rates: res.data.rates });
+  //     console.log(result.rows[0]);
+  //     res.send(result.rows[0]);
+  //   }
+  // });
 });
 
 app.get('/listings/:listingId/reservations', (req, res) => {
