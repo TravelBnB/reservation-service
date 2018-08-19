@@ -2,7 +2,7 @@ config:
   target: 'http://localhost:3003'
   phases:
     - duration: 60
-      arrivalRate: 10
+      arrivalRate: 20
   payload:
     - path: "./test.csv"
       fields:
@@ -27,14 +27,18 @@ config:
   #     - [1, 2, 3, 4, 5]
 scenarios:
   - flow:
-      # - loop:
-      #     - get:
-      #         url: "/listings/{{ $loopElement }}/reservations"
-      #   over: listings
       - loop:
-          - get: 
-              url: "/listings/{{ listingid }}/guests/{{ guestid }}/reservations"
+          - get:
+              url: "/listings/{{ listingid }}/reservations"
         count: 100
+      # - loop:
+      #     - get: 
+      #         url: "/listings/{{ listingid }}/guests/{{ guestid }}/reservations"
+      #   count: 100
+      # - loop:
+      #     - get: 
+      #         url: "/listings/{{ listingid }}"
+      #   count: 100
       - loop:
           - post:
               url: "/reservations"

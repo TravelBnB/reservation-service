@@ -5,7 +5,7 @@ node_modules
 *.config.js
 spec
 .circleci
-/public/bundle.js
+public/bundle.js
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
