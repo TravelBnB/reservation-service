@@ -1,0 +1,15 @@
+/node_modules/
+/.circleci
+/.ebextensions
+/mock-data/
+/spec/
+/public/bundle.js
+/public/bundle.js.map
+
+.eslintignore
+.eslintrc.js
+.gitignore
+
+arti.yml
+post.csv
+test.csv

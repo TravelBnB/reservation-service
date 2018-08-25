@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+
+  react-component:
+    build: ./
+    # image: shaneyuan18/reservation-service
+    depends_on:
+      - 'redis'
+    restart: on-failure 
+    ports:
+      - '3003:3003'
+    environment:
+      - REDIS_URL=redis://cache
+  redis:
+    image: redis:3.2
+    container_name: cache
+    ports:
+      - "6379:6379"

@@ -1,17 +1,17 @@
 const { Pool } = require('pg');
 
 const client = new Pool({
-  user: 'postgres',
-  // host: 'database.server.com',
+  user: 'spider',
+  host: '54.243.6.222',
   database: 'reservations',
-  // password: '1234',
-  // port: 5432,
+  password: 'thetravelers',
+  port: 5432,
 });
 
 client.connect();
 
 const getListingById = ({ listingId }, callback) => {
-  const queryStr = 'SELECT weekly_views, min_stay, max_guests, fees, tax_rate, rate from listings WHERE id = $1 ;';
+  const queryStr = 'SELECT id, name, weekly_views, min_stay, max_guests, fees, tax_rate, rate, total_reviews, avg_rating from listings WHERE id = $1 ;';
   client.query(queryStr, [listingId], callback);
 };
 
@@ -30,7 +30,7 @@ const getBookedDatesByGuestId = (guestId, callback) => {
   client.query(queryStr, [guestId], callback);
 };
 
-const getBookedDatesByListingGuestId = (listingId, guestId, callback) => {
+const getBookedDatesByListingGuestId = ({ listingId, guestId }, callback) => {
   // let startDate = [year, month, 1].join('-');
   // let endDate = month === 12? [Number(year)+1, 1, 1].join('-'): [year, Number(month)+1, 1].join('-');
   const queryStr = `SELECT check_in, check_out FROM reservations WHERE listing_id = $1 AND guest_id = $2 ;`;

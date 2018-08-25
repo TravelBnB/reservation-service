@@ -12,7 +12,7 @@ const redisHash = (res, req, ratesKey, callback) => {
     callback(req.params, (err, result) => {
       if (err) {
         res.status(500).send({ err: `Server oopsie ${err}` });
-      } else if (result.length === 0) {
+      } else if (result.rows.length === 0) {
         res.status(404).send('No such listing');
       } else {
         client.hmset(
@@ -36,7 +36,7 @@ const redisSet = (res, req, ratesKey, callback) => {
     callback(req.params, (err, result) => {
       if (err) {
         res.status(500).send({ err: `Server oopsie ${err}` });
-      } else if (result.length === 0) {
+      } else if (result.rows.length === 0) {
         res.status(404).send('No such listing');
       } else {
         client.set(

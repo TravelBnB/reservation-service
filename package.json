@@ -7,8 +7,9 @@
     "test": "jest",
     "lint": "eslint **/*.js **/*.jsx",
     "delint": "eslint --fix **/*.js **/**/*.jsx",
-    "start": "nodemon server/server.js",
+    "start": "node server/server.js",
     "build": "webpack -d --watch",
+    "prod": "webpack --config webpack.prod.js",
     "database": "mysql -u root < ./db/schema.sql"
   },
   "repository": {
@@ -50,6 +51,7 @@
     "react": "^16.4.1",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.4.1",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "webpack-merge": "^4.1.4"
   }
 }
